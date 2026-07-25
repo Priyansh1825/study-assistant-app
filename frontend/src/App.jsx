@@ -1,6 +1,7 @@
 // frontend/src/App.jsx
 import { useState } from 'react';
 import { generateFlashcards } from './services/api';
+import FlashcardQuiz from './components/FlashcardQuiz';
 
 function App() {
   const [inputValue, setInputValue] = useState('');
@@ -84,14 +85,10 @@ function App() {
       )}
 
       {status === 'success' && flashcards.length > 0 && (
-        <div>
-          <h2 style={{ fontSize: '1.25rem' }}>✨ Interactive Flashcards Ready ({flashcards.length})</h2>
-          {/* We will build the physical interactive Flashcard Component next */}
-          <div style={{ padding: '20px', background: '#fff', border: '1px dashed #cbd5e1', borderRadius: '6px', textAlign: 'center' }}>
-            [Interactive Component Container Placeholder]
-          </div>
-        </div>
-      )}
+  <div style={{ marginTop: '1.5rem' }}>
+    <FlashcardQuiz initialCards={flashcards} />
+  </div>
+)}
     </main>
   );
 }
