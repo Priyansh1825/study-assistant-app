@@ -1,19 +1,15 @@
-// frontend/src/components/FlashcardQuiz.jsx
 import { useState, useEffect } from 'react';
 
 export default function FlashcardQuiz({ initialCards }) {
-  // Manage the deck currently being tested (swaps to wrong answers on re-test)
   const [currentDeck, setCurrentDeck] = useState(initialCards);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   
-  // Track incorrect cards to facilitate the re-test requirement
   const [wrongAnswers, setWrongAnswers] = useState([]);
   const [correctCount, setCorrectCount] = useState(0);
   const [isRoundOver, setIsRoundOver] = useState(false);
   const [roundNumber, setRoundNumber] = useState(1);
 
-  // Reset the component state if the user generates an entirely new set of notes
   useEffect(() => {
     setCurrentDeck(initialCards);
     setCurrentIndex(0);
@@ -30,11 +26,9 @@ export default function FlashcardQuiz({ initialCards }) {
     if (wasCorrect) {
       setCorrectCount((prev) => prev + 1);
     } else {
-      // Save the complete card reference so we can re-test it later
       setWrongAnswers((prev) => [...prev, currentCard]);
     }
 
-    // Advance to next card or end the round
     if (currentIndex + 1 < currentDeck.length) {
       setIsFlipped(false);
       setCurrentIndex((prev) => prev + 1);

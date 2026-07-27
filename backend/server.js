@@ -9,7 +9,6 @@ app.use(express.json());
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Define the exact JSON structure we expect the AI to return
 const flashcardSchema = {
   type: SchemaType.OBJECT,
   properties: {
@@ -49,7 +48,6 @@ app.post('/api/generate-cards', async (req, res) => {
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
     
-    // Parse it to ensure it's valid before sending to frontend
     const parsedData = JSON.parse(responseText);
     res.json(parsedData);
 
