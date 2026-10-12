@@ -1,5 +1,7 @@
 let activeAbortController = null;
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export const generateFlashcards = async (topic) => {
   if (activeAbortController) {
     activeAbortController.abort();
@@ -9,7 +11,7 @@ export const generateFlashcards = async (topic) => {
   const { signal } = activeAbortController;
 
   try {
-    const response = await fetch('http://localhost:5000/api/generate-cards', {
+    const response = await fetch(`${API_BASE_URL}/api/generate-cards`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

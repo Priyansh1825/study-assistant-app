@@ -40,10 +40,21 @@ To remain fully transparent, I used AI tools (Gemini/Claude) during this assignm
 * Brainstorm the safest way to enforce strict JSON schemas via the Google Generative AI SDK to ensure reliable data structures. 
 * I manually hand-wrote the React state management (handling race conditions with `AbortController`), the loading/error states, and the `FlashcardQuiz` component's internal logic to ensure I fully understood and controlled the interactive UI lifecycle.
 
+## ✨ Key Features
+- **Instant AI Flashcards:** Generates structured flashcard decks using Gemini AI with strict JSON schema validation.
+- **Local Persistence:** Active decks are automatically preserved in `localStorage`, persisting through page refreshes.
+- **Interactive Quiz Modes:** Progress bar, round statistics, accuracy rate, and targeted re-testing of incorrect cards.
+- **Keyboard Shortcuts:**
+  - `Space` or `Enter`: Flip flashcard
+  - `←` or `1`: Mark as needing review (incorrect)
+  - `→` or `2`: Mark as mastered (correct)
+  - `R`: Re-test wrong answers on completion screen
+- **Pre-populated Study Ideas:** Clickable topic tags for instant testing.
+- **Health & Diagnostics Endpoint:** `GET /api/health` validates backend status and API key presence.
+
 ## ⚠️ Known Limitations
-* **Token Limits:** If a user pastes an extremely large textbook chapter (exceeding standard token limits), the backend may time out or return a truncated response.
-* **Math/Formatting:** The current flashcard UI supports standard text. Complex markdown, LaTeX, or deeply nested code blocks within the generated AI answers might not render perfectly without a dedicated markdown parsing library.
-* **Ephemeral State:** Currently, decks are not saved to a database or `localStorage`. Refreshing the browser will clear the active deck. 
+* **Token Limits:** Large text inputs (multi-chapter textbook notes) may hit model token windows.
+* **Math/LaTeX Rendering:** Text-only rendering; LaTeX mathematical formulas require an integrated math renderer (e.g. KaTeX). 
 
 ## ⏱️ Time Spent
 * **Architecture & Backend Setup:** ~1.5 hours

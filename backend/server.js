@@ -7,8 +7,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
 const flashcardSchema = {
   type: SchemaType.OBJECT,
   properties: {
@@ -27,20 +25,38 @@ const flashcardSchema = {
   required: ["cards"]
 };
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    apiKeyConfigured: Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_actual_api_key_here')
+  });
+});
+
 app.post('/api/generate-cards', async (req, res) => {
   try {
     const { topic } = req.body;
     
-    if (!topic) {
-        return res.status(400).json({ error: "Topic or notes are required." });
+    if (!topic || !topic.trim()) {
+      return res.status(400).json({ error: "Topic or notes are required." });
     }
 
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey || apiKey === 'your_actual_api_key_here') {
+      return res.status(500).json({
+        error: "Gemini API key is not configured. Please set a valid GEMINI_API_KEY in backend/.env."
+      });
+    }
+
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const modelName = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+
     const model = genAI.getGenerativeModel({ 
-        model: "gemini-2.5-flash",
-        generationConfig: {
-            responseMimeType: "application/json",
-            responseSchema: flashcardSchema,
-        }
+      model: modelName,
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: flashcardSchema,
+      }
     });
 
     const prompt = `You are a study assistant. Generate a set of educational flashcards based on the following topic or notes. Keep the answers concise.\n\nNotes: ${topic}`;
@@ -53,7 +69,7 @@ app.post('/api/generate-cards', async (req, res) => {
 
   } catch (error) {
     console.error("AI Generation Error:", error);
-    res.status(500).json({ error: "Failed to generate flashcards. Please try again." });
+    res.status(500).json({ error: error.message || "Failed to generate flashcards. Please try again." });
   }
 });
 
